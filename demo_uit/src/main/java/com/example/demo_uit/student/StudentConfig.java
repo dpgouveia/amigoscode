@@ -13,15 +13,12 @@ public class StudentConfig {
 	public CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
 		return args -> {
 			
-			Student s1 = new Student("Daniel", "daniel@gmail.com");
-			Student s2 = new Student("Kelia", "kelia@gmail.com");
-			Student s3 = new Student("João", "joao@gmail.com");
-			Student s4 = new Student("Sapeca", null);
-			Student s5 = new Student("Diana", null);
-			Student s6 = new Student("Charles", null);
-			Student s7 = new Student("Sansa", null);
-			
-			studentRepository.saveAll(List.of(s1, s2, s3, s4, s5, s6, s7));
+			Student s1 = new Student("Daniel", "daniel@gmail.com", Gender.MALE);
+			Student s2 = new Student("Kelia", "kelia@gmail.com", Gender.FEMALE);
+			Student s3 = new Student("João", "joao@gmail.com", Gender.MALE);
+			Student s4 = new Student("Jonas", "jonas@gmail.com");
+			Student s5 = new Student("Joana", "joca@gmail.com");
+			studentRepository.saveAll(List.of(s1, s2, s3, s4, s5));
 			
 		};
 	}

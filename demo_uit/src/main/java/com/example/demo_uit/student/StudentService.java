@@ -45,7 +45,7 @@ public class StudentService {
 		if(student.getName().length() <= 0) {
 			throw new StudentException("Student Name provided by external provider is not valid!");
 		}
-		
+				
 		studentRepository.save(student);
 		
 	}
