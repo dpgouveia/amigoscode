@@ -13,9 +13,9 @@ class StudentRepositoryTest {
 	@Autowired
 	private StudentRepository underTest;
 
-	// After each tests do the following tasks...
+	// After each test do the following tasks...
 	@AfterEach
-	void postUnitTestsTask() {
+	void tearDown() {
 		underTest.deleteAll();
 	}
 	
