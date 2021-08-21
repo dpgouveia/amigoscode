@@ -46,8 +46,7 @@ public class StudentService {
 			throw new StudentException("Student Name provided by external provider is not valid!");
 		}
 				
-		studentRepository.save(student);
-		
+		studentRepository.save(student);	
 	}
 
 	public void deleteStudent(Long id) {

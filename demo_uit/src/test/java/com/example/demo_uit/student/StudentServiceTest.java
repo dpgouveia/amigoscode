@@ -2,11 +2,9 @@ package com.example.demo_uit.student;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,8 +22,7 @@ class StudentServiceTest {
 	// the database (h2 or whatever db we setup in our solution)
 	// So.... to test the service we will use a "mock" implementation of
 	// StudentRepository
-	@Mock
-	private StudentRepository studentRepository;
+	@Mock private StudentRepository studentRepository;
 	private StudentService underTest;
 
 	@BeforeEach
@@ -65,45 +62,153 @@ class StudentServiceTest {
 		// Entao (cenario erro)
 //		verify(studentRepository).deleteAll();
 	}
-
+	
 	@Test
-	// @Disabled // anotacao usada para nao executar o teste
-	void testAddNewStudent() {
+	void testAddNewStudentWhenIdIsNotNull() {
 		// Dado que...
+		Long id = 1L;
+		String name = "Kelia";
 		String email = "kelia@gmail.com";
-		Student student = new Student("Kelia", email, Gender.FEMALE);
-		
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(id, name, email, gender);
+
 		// quando
-		underTest.addNewStudent(student);
-		
 		// entao
-		ArgumentCaptor<Student> ac = ArgumentCaptor.forClass(Student.class);
-		verify(studentRepository).save(ac.capture());
-		
-		assertThat(ac.getValue()).isEqualTo(student);
+		assertThatThrownBy(() -> underTest.addNewStudent(newStudent)).isInstanceOf(StudentException.class)
+				.hasMessageContaining("Student ID provided by external provider is not NULL (this field must be null for insert operations)!");
+
+		verify(studentRepository, Mockito.never()).save(Mockito.any());
+	}
+	
+	@Test
+	void testAddNewStudentWhenEmailIsNull() {
+		// Dado que...
+		String name = "Kelia";
+		String email = null;
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(name, email, gender);
+
+		// quando
+		// entao
+		assertThatThrownBy(() -> underTest.addNewStudent(newStudent)).isInstanceOf(StudentException.class)
+				.hasMessageContaining("Student Email provided by external provider is null!");
+
+		verify(studentRepository, Mockito.never()).save(Mockito.any());
+	}
+	
+	@Test
+	void testAddNewStudentWhenEmailIsInvalid() {
+		// Dado que...
+		String name = "Kelia";
+		String email = "";
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(name, email, gender);
+
+		// quando
+		// entao
+		assertThatThrownBy(() -> underTest.addNewStudent(newStudent)).isInstanceOf(StudentException.class)
+				.hasMessageContaining("Student Email provided by external provider is not valid!");
+
+		verify(studentRepository, Mockito.never()).save(Mockito.any());
 	}
 	
 	@Test
 	void testAddNewStudentWhenEmailExists() {
 		// Dado que...
+		String name = "Kelia";
 		String email = "kelia@gmail.com";
-		Student student = new Student("Kelia", email, Gender.FEMALE);
-		BDDMockito.given(studentRepository.selectExistByEmail(student.getEmail())).willReturn(true);
-		
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(name, email, gender);
+		BDDMockito.given(studentRepository.selectExistByEmail(newStudent.getEmail())).willReturn(true);
+
 		// quando
 		// entao
-		assertThatThrownBy(() ->underTest.addNewStudent(student))
-							.isInstanceOf(StudentException.class)
-							.hasMessageContaining("Student Email already exists in student database!");
-//							.hasMessageContaining("shit");
+		assertThatThrownBy(() -> underTest.addNewStudent(newStudent)).isInstanceOf(StudentException.class)
+				.hasMessageContaining("Student Email already exists in student database!");
 
 		verify(studentRepository, Mockito.never()).save(Mockito.any());
 	}
+	
+	@Test
+	void testAddNewStudentWhenNameIsNull() {
+		// Dado que...
+		String name = null;
+		String email = "kelia@gmail.com";
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(name, email, gender);
+
+		// quando
+		// entao
+		assertThatThrownBy(() -> underTest.addNewStudent(newStudent)).isInstanceOf(StudentException.class)
+				.hasMessageContaining("Student Name provided by external provider is null!");
+
+		verify(studentRepository, Mockito.never()).save(Mockito.any());
+	}
+	
+	@Test
+	void testAddNewStudentWhenNameIsInvalid() {
+		// Dado que...
+		String name = "";
+		String email = "kelia@gmail.com";
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(name, email, gender);
+
+		// quando
+		// entao
+		assertThatThrownBy(() -> underTest.addNewStudent(newStudent)).isInstanceOf(StudentException.class)
+				.hasMessageContaining("Student Name provided by external provider is not valid!");
+
+		verify(studentRepository, Mockito.never()).save(Mockito.any());
+	}
+	
+	@Test
+	// @Disabled // anotacao usada para nao executar o teste
+	void testAddNewStudent() {
+		// Dado que...
+		String name = "Kelia";
+		String email = "kelia@gmail.com";
+		Gender gender = Gender.FEMALE;
+		Student newStudent = new Student(name, email, gender);
+
+		// quando
+		underTest.addNewStudent(newStudent);
+
+		// entao
+		ArgumentCaptor<Student> ac = ArgumentCaptor.forClass(Student.class);
+		verify(studentRepository).save(ac.capture());
+
+		assertThat(ac.getValue()).isEqualTo(newStudent);
+	}
 
 	@Test
-	@Disabled
 	void testDeleteStudent() {
-		fail("Not yet implemented");
+		// Dado que...
+		Long id = 1L;
+		BDDMockito.given(studentRepository.existsById(id)).willReturn(true);
+		
+		// quando
+		underTest.deleteStudent(1L);
+		
+		// entao
+		ArgumentCaptor<Long> ac = ArgumentCaptor.forClass(Long.class);
+		verify(studentRepository).deleteById(ac.capture());
+
+		assertThat(ac.getValue()).isEqualTo(id);
+	}
+	
+	@Test
+	void testDeleteStudentWheIdDoesNotExist() {
+		// Dado que...
+		Long id = 1L;
+		BDDMockito.given(studentRepository.existsById(id)).willReturn(false);
+		
+		// quando e entao
+		assertThatThrownBy(() -> underTest.deleteStudent(id))
+			.isInstanceOf(StudentException.class)
+			.hasMessageContaining("Student ID provided by external provider does not exist in database!");
+
+		verify(studentRepository, Mockito.never()).deleteById(Mockito.any());
+		
 	}
 
 }
