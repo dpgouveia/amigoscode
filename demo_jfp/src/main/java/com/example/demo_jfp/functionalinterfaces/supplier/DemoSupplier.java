@@ -1,4 +1,4 @@
-package com.example.demo_jfp.supplier;
+package com.example.demo_jfp.functionalinterfaces.supplier;
 
 import java.util.List;
 import java.util.function.Supplier;

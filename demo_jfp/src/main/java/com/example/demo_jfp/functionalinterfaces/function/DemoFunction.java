@@ -1,4 +1,4 @@
-package com.example.demo_jfp.function;
+package com.example.demo_jfp.functionalinterfaces.function;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

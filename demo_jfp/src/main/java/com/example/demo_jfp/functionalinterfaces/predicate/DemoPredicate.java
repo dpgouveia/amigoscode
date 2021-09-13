@@ -1,4 +1,4 @@
-package com.example.demo_jfp.predicate;
+package com.example.demo_jfp.functionalinterfaces.predicate;
 
 import java.util.function.Predicate;
 

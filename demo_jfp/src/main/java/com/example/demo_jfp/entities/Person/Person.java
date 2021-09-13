@@ -1,4 +1,4 @@
-package com.example.demo_jfp.imperative.Person;
+package com.example.demo_jfp.entities.Person;
 
 public class Person {
 	

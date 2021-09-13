@@ -1,9 +1,9 @@
-package com.example.demo_jfp.consumer;
+package com.example.demo_jfp.functionalinterfaces.consumer;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import com.example.demo_jfp.consumer.Customer.Customer;
+import com.example.demo_jfp.entities.Customer.Customer;
 
 public class DemoConsumer {
 	

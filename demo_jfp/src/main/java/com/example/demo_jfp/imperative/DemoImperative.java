@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.example.demo_jfp.imperative.Person.Gender;
-import com.example.demo_jfp.imperative.Person.Person;
+import com.example.demo_jfp.entities.Person.Gender;
+import com.example.demo_jfp.entities.Person.Person;
 
-public class Main {
+public class DemoImperative {
 	
 	public static void main(String[] args) {
 		List<Person> people = List.of(
